@@ -38,8 +38,7 @@ public class MainMenuScreen implements Screen {
 
         // Lógica de transición de pantallas
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-
-            System.out.println("Iniciando partida... (Proximamente)");
+            juego.setScreen(new GameScreen(juego));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             juego.setScreen(new ConfigurationScreen(juego));
         }
