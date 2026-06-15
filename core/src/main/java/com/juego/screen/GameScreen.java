@@ -16,6 +16,9 @@ public class GameScreen implements Screen {
     // Variable para el fondo
     private Texture background;
 
+    private final HudRenderer hud;
+
+
     public GameScreen(Juego juego) {
         this.juego = juego;
         // Inicializamos nuestros gestores core
@@ -27,6 +30,9 @@ public class GameScreen implements Screen {
         this.levelManager.loadLevel("maps/nivel1.tmx");
         // Cargamos el fondo. LibGDX lo carga al vuelo
         background = new Texture("images/fondo1.png");
+
+        hud = new HudRenderer();
+
     }
 
     @Override
@@ -39,6 +45,8 @@ public class GameScreen implements Screen {
 
         // 2. Dibujamos el resultado en pantalla
         renderManager.render(levelManager, background, logicManager, juego.getResourceManager());
+
+        hud.render(logicManager);
     }
 
     @Override
@@ -58,5 +66,6 @@ public class GameScreen implements Screen {
         renderManager.dispose();
         levelManager.dispose();
         background.dispose();
+        hud.dispose();
     }
 }
