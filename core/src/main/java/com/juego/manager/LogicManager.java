@@ -3,6 +3,8 @@ package com.juego.manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.juego.domain.Player;
+import com.badlogic.gdx.utils.Array;
+import com.juego.domain.Collectible;
 /**
  * Se encarga de procesar las reglas del juego (movimiento, inputs, colisiones).
  * No dibuja nada, solo calcula.
@@ -12,6 +14,8 @@ public class LogicManager {
     private final Player player;
     private int vidas = 3;
     private int puntuacion = 0;
+    private final Array<Collectible> collectibles;
+
 
 
     // Constantes de físicas
@@ -23,6 +27,11 @@ public class LogicManager {
     public LogicManager() {
         // Hacemos que nazca en la coordenada X=50, Y=150 (en el aire)
         player = new Player(50, 150);
+        collectibles = new Array<>();
+        // 3 frutas de prueba
+        collectibles.add(new Collectible(100, 40));
+        collectibles.add(new Collectible(150, 60));
+        collectibles.add(new Collectible(200, 40));
     }
 
     /**
@@ -55,6 +64,14 @@ public class LogicManager {
             player.getPosition().y = 32;
             player.getVelocity().y = 0; // Frenamos la caída
         }
+        // COMPROBAR COLECCIONABLES
+        for (Collectible c : collectibles) {
+            // Si no ha sido recogida Y el jugador la toca
+            if (!c.isCollected() && player.getBounds().overlaps(c.getBounds())) {
+                c.setCollected(true);
+                puntuacion += 10;
+            }
+        }
     }
     public Player getPlayer() {
         return player;
@@ -62,4 +79,5 @@ public class LogicManager {
 
     public int getVidas() { return vidas; }
     public int getPuntuacion() { return puntuacion; }
+    public Array<Collectible> getCollectibles() { return collectibles; }
 }

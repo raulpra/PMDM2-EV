@@ -55,6 +55,16 @@ public class RenderManager {
         if (levelManager != null) {
             levelManager.render(camera);
         }
+
+        // --- PINTAMOS LOS COLECCIONABLES ---
+        batch.begin();
+        for (com.juego.domain.Collectible c : logicManager.getCollectibles()) {
+            if (!c.isCollected()) {
+                batch.draw(resourceManager.getItemFrame(), c.getBounds().x, c.getBounds().y, 16, 16);
+            }
+        }
+
+
         // --- PINTAR AL JUGADOR ---
         Player p = logicManager.getPlayer();
         TextureRegion currentFrame;
@@ -73,8 +83,8 @@ public class RenderManager {
             currentFrame.flip(true, false);
         }
         // Lo dibujamos
-        batch.begin();
         batch.draw(currentFrame, p.getPosition().x, p.getPosition().y, 16, 16);
+
         batch.end();
     }
 
