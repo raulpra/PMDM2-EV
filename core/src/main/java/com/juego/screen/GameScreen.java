@@ -2,6 +2,7 @@ package com.juego.screen;
 
 import com.badlogic.gdx.Screen;
 import com.juego.Juego;
+import com.juego.manager.LevelManager;
 import com.juego.manager.LogicManager;
 import com.juego.manager.RenderManager;
 
@@ -9,12 +10,17 @@ public class GameScreen implements Screen {
     private final Juego juego;
     private final RenderManager renderManager;
     private final LogicManager logicManager;
+    private final LevelManager levelManager;
 
     public GameScreen(Juego juego) {
         this.juego = juego;
         // Inicializamos nuestros gestores core
         this.renderManager = new RenderManager();
         this.logicManager = new LogicManager();
+
+        // Instanciamos el gestor de nivel y cargamos el nivel 1
+        this.levelManager = new LevelManager(juego);
+        this.levelManager.loadLevel("maps/nivel1.tmx");
     }
 
     @Override
@@ -26,7 +32,7 @@ public class GameScreen implements Screen {
         logicManager.update(delta);
 
         // 2. Dibujamos el resultado en pantalla
-        renderManager.render();
+        renderManager.render(levelManager);
     }
 
     @Override
@@ -44,5 +50,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         renderManager.dispose();
+        levelManager.dispose();
     }
 }

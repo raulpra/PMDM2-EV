@@ -30,6 +30,11 @@ public class RenderManager {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //  Dibujamos el mapa primero (para que quede de fondo)
+        if (levelManager != null) {
+            levelManager.render(camera);
+        }
+
         // 4. Empezamos a dibujar
         batch.begin();
 
