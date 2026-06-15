@@ -10,6 +10,9 @@ import com.juego.domain.Player;
 public class LogicManager {
 
     private final Player player;
+    private int vidas = 3;
+    private int puntuacion = 0;
+
 
     // Constantes de físicas
     private static final float GRAVITY = -400f;       // Fuerza de la gravedad (hacia abajo)
@@ -56,4 +59,7 @@ public class LogicManager {
     public Player getPlayer() {
         return player;
     }
+
+    public int getVidas() { return vidas; }
+    public int getPuntuacion() { return puntuacion; }
 }

@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.juego.domain.Player;
 import com.juego.manager.ResourceManager;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 
 /**
@@ -19,13 +21,15 @@ public class RenderManager {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     private final ShapeRenderer shapeRenderer;
+    private final Viewport viewport;
 
     public RenderManager() {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         // Configuramos la cámara para que vea nuestra resolución virtual (800x480)
         // Dividimos entre 3 para hacer un "zoom x3".
-        camera.setToOrtho(false, Constants.APP_WIDTH/ 2.5f, Constants.APP_HEIGHT);
+        viewport = new FitViewport(Constants.APP_WIDTH / 3f, Constants.APP_HEIGHT / 3f, camera);
+        viewport.apply();
         shapeRenderer = new ShapeRenderer();
     }
 
@@ -80,6 +84,10 @@ public class RenderManager {
 
     public SpriteBatch getBatch() {
         return batch;
+    }
+
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     public void dispose() {
