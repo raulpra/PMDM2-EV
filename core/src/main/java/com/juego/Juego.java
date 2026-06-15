@@ -1,15 +1,33 @@
 package com.juego;
 
 import com.badlogic.gdx.Game;
-import com.juego.screen.FirstScreen;
+import com.juego.manager.ResourceManager;
+import com.juego.screen.MainMenuScreen;
+
 /**
  * Clase principal del juego. Hereda de Game (libGDX) para poder gestionar
  * múltiples pantallas (Screens) de forma sencilla.
  */
 public class Juego extends Game {
+
+    private ResourceManager resourceManager;
     @Override
     public void create() {
-        // Inicializamos el juego cargando la primera pantalla
-        setScreen(new FirstScreen());
+        resourceManager = new ResourceManager();
+        resourceManager.loadAllResources();
+        resourceManager.finishLoading(); // Cargamos todo antes de empezar
+
+        // Iniciamos en el menú principal
+        setScreen(new MainMenuScreen(this));
+    }
+    public ResourceManager getResourceManager() {
+        return resourceManager;
+    }
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (resourceManager != null) {
+            resourceManager.dispose();
+        }
     }
 }
