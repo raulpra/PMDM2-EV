@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.juego.util.Constants;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.juego.domain.Player;
+import com.juego.manager.ResourceManager;
+
 
 /**
  * Se encarga en exclusiva de dibujar en la pantalla (cámara, sprites, etc.).
@@ -25,7 +29,7 @@ public class RenderManager {
         shapeRenderer = new ShapeRenderer();
     }
 
-    public void render(LevelManager levelManager, Texture background, LogicManager logicManager) {
+    public void render(LevelManager levelManager, Texture background, LogicManager logicManager, ResourceManager resourceManager) {
         // 1. Actualizamos la cámara
         camera.update();
         // 2. Le decimos al batch que dibuje desde el punto de vista de la cámara
@@ -47,19 +51,27 @@ public class RenderManager {
         if (levelManager != null) {
             levelManager.render(camera);
         }
-        // --- PINTAMOS AL JUGADOR ---
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(1, 0, 0, 1); // Color Rojo
+        // --- PINTAR AL JUGADOR ---
+        Player p = logicManager.getPlayer();
+        TextureRegion currentFrame;
 
-        // Dibujamos un rectángulo rojo en la posición del jugador
-        shapeRenderer.rect(
-            logicManager.getPlayer().getPosition().x,
-            logicManager.getPlayer().getPosition().y,
-            logicManager.getPlayer().getBounds().width,
-            logicManager.getPlayer().getBounds().height
-        );
-        shapeRenderer.end();
+        // Decidimos si usamos la animación de correr o de estar quieto
+        if (p.getVelocity().x != 0) {
+            currentFrame = resourceManager.getRunAnim().getKeyFrame(p.getStateTimer());
+        } else {
+            currentFrame = resourceManager.getIdleAnim().getKeyFrame(p.getStateTimer());
+        }
+
+        // Volteamos la imagen si mira a la izquierda (flip)
+        if (!p.isFacingRight() && !currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        } else if (p.isFacingRight() && currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        }
+        // Lo dibujamos
+        batch.begin();
+        batch.draw(currentFrame, p.getPosition().x, p.getPosition().y, 16, 16);
+        batch.end();
     }
 
     public OrthographicCamera getCamera() {
