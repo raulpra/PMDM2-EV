@@ -16,6 +16,8 @@ public class ResourceManager {
     private Animation<TextureRegion> idleAnim;
     private Animation<TextureRegion> runAnim;
 
+    private com.badlogic.gdx.graphics.g2d.TextureRegion itemFrame;
+
     public ResourceManager() {
         assetManager = new AssetManager();
         // Le indicamos a libGDX cómo debe leer los archivos .tmx de Tiled
@@ -31,6 +33,7 @@ public class ResourceManager {
         assetManager.load("maps/nivel1.tmx", TiledMap.class);
         assetManager.load("images/onion_idle.png", com.badlogic.gdx.graphics.Texture.class);
         assetManager.load("images/onion_run.png", com.badlogic.gdx.graphics.Texture.class);
+        assetManager.load("images/item.png", com.badlogic.gdx.graphics.Texture.class);
 
     }
 
@@ -63,6 +66,11 @@ public class ResourceManager {
         // Hacemos que se repitan en bucle infinito
         idleAnim.setPlayMode(Animation.PlayMode.LOOP);
         runAnim.setPlayMode(Animation.PlayMode.LOOP);
+
+        com.badlogic.gdx.graphics.Texture itemSheet = get("images/item.png");
+        com.badlogic.gdx.graphics.g2d.TextureRegion[][] itemFrames = com.badlogic.gdx.graphics.g2d.TextureRegion.split(itemSheet, 16, 16);
+        itemFrame = itemFrames[0][0]; // Cogemos la primera fruta
+
     }
 
     /**
@@ -80,4 +88,6 @@ public class ResourceManager {
     }
     public Animation<TextureRegion> getIdleAnim() { return idleAnim; }
     public Animation<TextureRegion> getRunAnim() { return runAnim; }
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getItemFrame() { return itemFrame; }
+
 }
