@@ -3,6 +3,7 @@ package com.juego.manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.juego.util.Constants;
 
@@ -17,10 +18,11 @@ public class RenderManager {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         // Configuramos la cámara para que vea nuestra resolución virtual (800x480)
-        camera.setToOrtho(false, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+        // Dividimos entre 3 para hacer un "zoom x3".
+        camera.setToOrtho(false, Constants.APP_WIDTH/ 2.5f, Constants.APP_HEIGHT);
     }
 
-    public void render() {
+    public void render(LevelManager levelManager, Texture background) {
         // 1. Actualizamos la cámara
         camera.update();
         // 2. Le decimos al batch que dibuje desde el punto de vista de la cámara
@@ -30,9 +32,19 @@ public class RenderManager {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // 4. Empezamos a dibujar
         batch.begin();
-
+        // 1. Pintamos el fondo. Usamos el tamaño de la cámara para que ocupe todo
+        if (background != null) {
+            batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
+        }
+        batch.end();
+        // 2. Pintamos el mapa encima del fondo
+        if (levelManager != null) {
+            levelManager.render(camera);
+        }
+        // 3. Pintamos las entidades (jugador, enemigos...) encima de todo
+        batch.begin();
+        // batch.draw(player...)
         batch.end();
     }
 

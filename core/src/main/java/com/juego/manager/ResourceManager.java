@@ -24,7 +24,7 @@ public class ResourceManager {
     public void loadAllResources() {
 
         // assetManager.load("images/tileset.png", Texture.class);
-        // assetManager.load("maps/nivel1.tmx", TiledMap.class);
+        assetManager.load("maps/nivel1.tmx", TiledMap.class);
     }
 
     /**
