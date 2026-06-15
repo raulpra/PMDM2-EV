@@ -16,6 +16,7 @@ public class Juego extends Game {
         resourceManager = new ResourceManager();
         resourceManager.loadAllResources();
         resourceManager.finishLoading(); // Cargamos todo antes de empezar
+        resourceManager.createAnimations();
 
         // Iniciamos en el menú principal
         setScreen(new MainMenuScreen(this));
