@@ -38,7 +38,7 @@ public class GameScreen implements Screen {
         logicManager.update(delta);
 
         // 2. Dibujamos el resultado en pantalla
-        renderManager.render(levelManager, background);
+        renderManager.render(levelManager, background, logicManager);
     }
 
     @Override
