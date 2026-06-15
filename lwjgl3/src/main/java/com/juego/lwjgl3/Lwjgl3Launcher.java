@@ -15,7 +15,7 @@ public class Lwjgl3Launcher {
     }
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("Mi Juego de Plataformas"); // Pon el título que quieras
+        configuration.setTitle("Mi Juego de Plataformas");
         configuration.useVsync(true);
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate);
         configuration.setWindowedMode(800, 480);
