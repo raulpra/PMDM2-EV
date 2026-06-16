@@ -12,6 +12,7 @@ public class Player {
     private final Rectangle bounds;
     private float stateTimer; // Cronómetro para saber qué fotograma pintar
     private boolean facingRight; // ¿Mira a la derecha?
+    private float invulnerableTimer;
 
     // Modifica el constructor:
     public Player(float startX, float startY) {
@@ -19,10 +20,15 @@ public class Player {
         velocity = new Vector2(0, 0);
         bounds = new Rectangle(startX, startY, 16, 16); // El OnionLad mide 16x16
         stateTimer = 0;
+        invulnerableTimer = 0;
         facingRight = true;
     }
 
     public void update(float delta) {
+        // Cuenta atrás de invulnerabilidad
+        if (invulnerableTimer > 0) {
+            invulnerableTimer -= delta;
+        }
         // Le sumamos a la posición la velocidad multiplicada por el tiempo (delta)
         position.add(velocity.x * delta, velocity.y * delta);
 
@@ -43,4 +49,6 @@ public class Player {
     public Rectangle getBounds() { return bounds; }
     public float getStateTimer() { return stateTimer; }
     public boolean isFacingRight() { return facingRight; }
+    public boolean isInvulnerable() { return invulnerableTimer > 0; }
+    public void setInvulnerable(float time) { this.invulnerableTimer = time; }
 }
