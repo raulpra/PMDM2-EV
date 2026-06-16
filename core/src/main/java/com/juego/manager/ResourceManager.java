@@ -36,6 +36,7 @@ public class ResourceManager {
 
         // assetManager.load("images/tileset.png", Texture.class);
         assetManager.load("maps/nivel1.tmx", TiledMap.class);
+        assetManager.load("maps/nivel2.tmx", TiledMap.class);
         assetManager.load("images/onion_idle.png", Texture.class);
         assetManager.load("images/onion_run.png", Texture.class);
         assetManager.load("images/item.png", Texture.class);

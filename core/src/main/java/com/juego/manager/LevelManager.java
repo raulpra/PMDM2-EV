@@ -1,9 +1,17 @@
 package com.juego.manager;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.juego.Juego;
+import com.juego.domain.Collectible;
+import com.juego.domain.Enemy;
+import com.juego.domain.EnemyType;
 
 /**
  * Se encarga de cargar, guardar y dibujar el mapa creado en Tiled.
@@ -12,6 +20,8 @@ public class LevelManager {
     private final Juego juego;
     private TiledMap currentMap;
     private OrthogonalTiledMapRenderer mapRenderer;
+    private int currentLevel = 1;
+    private com.badlogic.gdx.graphics.Texture background;
 
     public LevelManager(Juego juego) {
         this.juego = juego;
@@ -24,37 +34,50 @@ public class LevelManager {
         // Creamos el objeto de libGDX que se encarga de pintar TiledMaps
         mapRenderer = new OrthogonalTiledMapRenderer(currentMap);
 
+        // Cargamos el fondo personalizado desde Tiled
+        if (background != null) {
+            background.dispose(); // Limpiamos el fondo del nivel anterior
+        }
+        String bgPath = currentMap.getProperties().get("background", String.class);
+        if (bgPath != null && !bgPath.isEmpty()) {
+            background = new com.badlogic.gdx.graphics.Texture(bgPath);
+        } else {
+            background = new com.badlogic.gdx.graphics.Texture("images/fondo1.png"); // Fondo por defecto
+        }
+
         // --- GENERADOR DE NIVELES (Cargar Objetos) ---
         // Limpiamos las listas por si venimos de otro nivel
         logicManager.getEnemies().clear();
         logicManager.getCollectibles().clear();
 
         // Leemos Enemigos
-        com.badlogic.gdx.maps.MapLayer enemigosLayer = currentMap.getLayers().get("enemigos");
+        MapLayer enemigosLayer = currentMap.getLayers().get("enemigos");
         if (enemigosLayer != null) {
-            for (com.badlogic.gdx.maps.MapObject obj : enemigosLayer.getObjects()) {
-                if (obj instanceof com.badlogic.gdx.maps.objects.RectangleMapObject) {
+            for (MapObject obj : enemigosLayer.getObjects()) {
+                if (obj instanceof RectangleMapObject) {
                     com.badlogic.gdx.math.Rectangle rect = ((com.badlogic.gdx.maps.objects.RectangleMapObject) obj).getRectangle();
-                    // Leemos la propiedad "tipo". Si no la has puesto, ponemos NORMAL por defecto
-                    String tipoStr = obj.getProperties().get("tipo", "NORMAL", String.class);
-                    com.juego.domain.EnemyType tipo;
-                    try {
-                        tipo = com.juego.domain.EnemyType.valueOf(tipoStr);
-                    } catch (Exception e) {
-                        tipo = com.juego.domain.EnemyType.NORMAL; // A prueba de fallos tipográficos
+
+                    // Comprobamos si tiene un tipo especial (FAST, TANK)
+                    com.juego.domain.EnemyType tipo = com.juego.domain.EnemyType.NORMAL;
+                    if (obj.getProperties().containsKey("tipo")) {
+                        String tipoString = obj.getProperties().get("tipo", String.class);
+                        if (tipoString.equals("FAST")) tipo = com.juego.domain.EnemyType.FAST;
+                        else if (tipoString.equals("TANK")) tipo = com.juego.domain.EnemyType.TANK;
                     }
-                    logicManager.getEnemies().add(new com.juego.domain.Enemy(rect.x, rect.y, tipo));
+
+                    // Pasamos también la anchura (rect.width) para que sepa hasta dónde patrullar
+                    logicManager.getEnemies().add(new com.juego.domain.Enemy(rect.x, rect.y, tipo, rect.width));
                 }
             }
         }
 
         // Leemos Frutas
-        com.badlogic.gdx.maps.MapLayer frutasLayer = currentMap.getLayers().get("frutas");
+        MapLayer frutasLayer = currentMap.getLayers().get("frutas");
         if (frutasLayer != null) {
-            for (com.badlogic.gdx.maps.MapObject obj : frutasLayer.getObjects()) {
-                if (obj instanceof com.badlogic.gdx.maps.objects.RectangleMapObject) {
-                    com.badlogic.gdx.math.Rectangle rect = ((com.badlogic.gdx.maps.objects.RectangleMapObject) obj).getRectangle();
-                    logicManager.getCollectibles().add(new com.juego.domain.Collectible(rect.x, rect.y));
+            for (MapObject obj : frutasLayer.getObjects()) {
+                if (obj instanceof RectangleMapObject) {
+                    Rectangle rect = ((RectangleMapObject) obj).getRectangle();
+                    logicManager.getCollectibles().add(new Collectible(rect.x, rect.y));
                 }
             }
         }
@@ -65,10 +88,10 @@ public class LevelManager {
      */
     public boolean isSolid(float x, float y) {
         if (currentMap == null) return false;
-        
-        com.badlogic.gdx.maps.tiled.TiledMapTileLayer layer = 
-            (com.badlogic.gdx.maps.tiled.TiledMapTileLayer) currentMap.getLayers().get("Capa de patrones 1");
-            
+
+        TiledMapTileLayer layer =
+            (TiledMapTileLayer) currentMap.getLayers().get("Capa de patrones 1");
+
         if (layer == null) return false;
 
         // Tiled funciona en una cuadrícula de 16x16
@@ -81,7 +104,7 @@ public class LevelManager {
         }
 
         // Buscamos si en esa casilla hay un bloque dibujado
-        com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell cell = layer.getCell(cellX, cellY);
+        TiledMapTileLayer.Cell cell = layer.getCell(cellX, cellY);
         return cell != null && cell.getTile() != null;
     }
 
@@ -99,17 +122,17 @@ public class LevelManager {
 
     public float getMapPixelWidth() {
         if (currentMap == null) return 0;
-        // Leemos cuántas casillas de ancho tiene el mapa
         int widthInTiles = currentMap.getProperties().get("width", Integer.class);
-        // Leemos cuántos píxeles mide cada casilla (16)
         int tileWidth = currentMap.getProperties().get("tilewidth", Integer.class);
-
         return widthInTiles * tileWidth;
     }
 
+    public int getCurrentLevel() { return currentLevel; }
+    public void setCurrentLevel(int level) { this.currentLevel = level; }
+    public com.badlogic.gdx.graphics.Texture getBackground() { return background; }
+
     public void dispose() {
-        if (mapRenderer != null) {
-            mapRenderer.dispose();
-        }
+        if (mapRenderer != null) mapRenderer.dispose();
+        if (background != null) background.dispose();
     }
 }

@@ -12,16 +12,18 @@ public class Enemy {
 
 
     // Variables para la patrulla
-    private final float startX;
-    private float patrolDistance; // Cuánto camina antes de darse la vuelta
+    private final float minX;
+    private final float maxX;
     private boolean movingRight = true;
     private boolean facingRight = true;
 
     private float stateTimer;
 
-    public Enemy(float startX, float startY, EnemyType type) {
+    public Enemy(float startX, float startY, EnemyType type, float patrolWidth) {
         this.position = new Vector2(startX, startY);
-        this.startX = startX;
+        this.minX = startX;
+        // Si no se dibuja anchura en Tiled, le damos 40 píxeles por defecto
+        this.maxX = startX + (patrolWidth > 0 ? patrolWidth : 40f);
         this.type = type;
         this.bounds = new Rectangle(startX, startY, 16, 16);
         this.stateTimer = 0;
@@ -30,16 +32,13 @@ public class Enemy {
         switch(type) {
             case FAST:
                 this.velocity = new Vector2(60f, 0); // Corre el doble
-                this.patrolDistance = 60f;
                 break;
             case TANK:
                 this.velocity = new Vector2(15f, 0); // Va súper lento
-                this.patrolDistance = 100f; // Pero llega muy lejos
                 break;
             case NORMAL:
             default:
                 this.velocity = new Vector2(30f, 0); // Velocidad estándar
-                this.patrolDistance = 40f;
                 break;
         }
     }
@@ -47,17 +46,17 @@ public class Enemy {
     public void update(float delta) {
         stateTimer += delta;
 
-        // Lógica de patrulla básica (Ping-Pong)
+        // Lógica de patrulla básica (Ping-Pong) usando los límites del rectángulo
         if (movingRight) {
             position.x += velocity.x * delta;
             facingRight = true;
-            if (position.x > startX + patrolDistance) {
+            if (position.x > maxX) {
                 movingRight = false; // Da media vuelta
             }
         } else {
             position.x -= velocity.x * delta;
             facingRight = false;
-            if (position.x < startX - patrolDistance) {
+            if (position.x < minX) {
                 movingRight = true; // Da media vuelta
             }
         }
