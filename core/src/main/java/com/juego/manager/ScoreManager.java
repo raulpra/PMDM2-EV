@@ -8,37 +8,50 @@ import java.util.List;
 
 public class ScoreManager {
     private static final String PREFS_NAME = "MiJuegoScores";
-    private static final int MAX_SCORES = 5; // Guardaremos el Top 5
+    private static final int MAX_SCORES = 10;
 
-    public void addScore(int newScore) {
-        // Obtenemos el archivo de guardado
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
+    // Pequeña clase para guardar Nombre + Puntuación juntos
+    public static class ScoreRecord implements Comparable<ScoreRecord> {
+        public String name;
+        public int score;
 
-        // Cargamos las puntuaciones actuales
-        List<Integer> scores = getTopScores();
-
-        // Añadimos la nuestra
-        scores.add(newScore);
-
-        // Las ordenamos de MAYOR a MENOR
-        scores.sort(Collections.reverseOrder());
-
-        // Guardamos solo las 5 mejores
-        for (int i = 0; i < Math.min(scores.size(), MAX_SCORES); i++) {
-            prefs.putInteger("score_" + i, scores.get(i));
+        public ScoreRecord(String name, int score) {
+            this.name = name;
+            this.score = score;
         }
 
-        prefs.flush(); // Guarda físicamente en el disco
+        // Para ordenar de mayor a menor automáticamente
+        @Override
+        public int compareTo(ScoreRecord other) {
+            return Integer.compare(other.score, this.score);
+        }
     }
 
-    public List<Integer> getTopScores() {
+    public void addScore(String name, int newScore) {
         Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
-        List<Integer> scores = new ArrayList<>();
+        List<ScoreRecord> scores = getTopScores();
+
+        scores.add(new ScoreRecord(name, newScore));
+        Collections.sort(scores); // Ordena usando el compareTo
+
+        // Guardamos el top 10
+        for (int i = 0; i < Math.min(scores.size(), MAX_SCORES); i++) {
+            prefs.putString("name_" + i, scores.get(i).name);
+            prefs.putInteger("score_" + i, scores.get(i).score);
+        }
+        prefs.flush();
+    }
+
+    public List<ScoreRecord> getTopScores() {
+        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
+        List<ScoreRecord> scores = new ArrayList<>();
 
         for (int i = 0; i < MAX_SCORES; i++) {
-            int score = prefs.getInteger("score_" + i, 0); // Devuelve 0 si no existe
+            int score = prefs.getInteger("score_" + i, 0);
             if (score > 0) {
-                scores.add(score);
+                // Si no hay nombre guardado, ponemos Anónimo por defecto
+                String name = prefs.getString("name_" + i, "Anónimo");
+                scores.add(new ScoreRecord(name, score));
             }
         }
         return scores;
