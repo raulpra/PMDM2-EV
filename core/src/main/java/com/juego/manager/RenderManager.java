@@ -91,7 +91,6 @@ public class RenderManager {
             }
         }
 
-
         // --- PINTAR AL JUGADOR ---
         //Player p = logicManager.getPlayer();
         TextureRegion currentFrame;
@@ -109,8 +108,24 @@ public class RenderManager {
         } else if (p.isFacingRight() && currentFrame.isFlipX()) {
             currentFrame.flip(true, false);
         }
+
         // Lo dibujamos
         batch.draw(currentFrame, p.getPosition().x, p.getPosition().y, 16, 16);
+
+        // --- PINTAMOS LOS ENEMIGOS ---
+        for (com.juego.domain.Enemy e : logicManager.getEnemies()) {
+            // Como siempre están patrullando, usamos la animación de correr
+            TextureRegion eFrame = resourceManager.getEnemyRunAnim().getKeyFrame(e.getStateTimer());
+
+            // Los volteamos si miran a la izquierda
+            if (!e.isFacingRight() && !eFrame.isFlipX()) {
+                eFrame.flip(true, false);
+            } else if (e.isFacingRight() && eFrame.isFlipX()) {
+                eFrame.flip(true, false);
+            }
+
+            batch.draw(eFrame, e.getPosition().x, e.getPosition().y, 16, 16);
+        }
 
         batch.end();
     }

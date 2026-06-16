@@ -16,7 +16,10 @@ public class ResourceManager {
     private Animation<TextureRegion> idleAnim;
     private Animation<TextureRegion> runAnim;
 
-    private com.badlogic.gdx.graphics.g2d.TextureRegion itemFrame;
+    private Animation<TextureRegion> enemyIdleAnim;
+    private Animation<TextureRegion> enemyRunAnim;
+
+    private TextureRegion itemFrame;
 
     public ResourceManager() {
         assetManager = new AssetManager();
@@ -31,10 +34,11 @@ public class ResourceManager {
 
         // assetManager.load("images/tileset.png", Texture.class);
         assetManager.load("maps/nivel1.tmx", TiledMap.class);
-        assetManager.load("images/onion_idle.png", com.badlogic.gdx.graphics.Texture.class);
-        assetManager.load("images/onion_run.png", com.badlogic.gdx.graphics.Texture.class);
-        assetManager.load("images/item.png", com.badlogic.gdx.graphics.Texture.class);
-
+        assetManager.load("images/onion_idle.png", Texture.class);
+        assetManager.load("images/onion_run.png", Texture.class);
+        assetManager.load("images/item.png", Texture.class);
+        assetManager.load("images/enemy_idle.png", Texture.class);
+        assetManager.load("images/enemy_run.png", Texture.class);
     }
 
     /**
@@ -53,8 +57,8 @@ public class ResourceManager {
 
     public void createAnimations() {
 
-        com.badlogic.gdx.graphics.Texture idleSheet = get("images/onion_idle.png");
-        com.badlogic.gdx.graphics.Texture runSheet = get("images/onion_run.png");
+        Texture idleSheet = get("images/onion_idle.png");
+        Texture runSheet = get("images/onion_run.png");
         // Las cortamos en cuadraditos de 16x16
         TextureRegion[][] idleFrames = TextureRegion.split(idleSheet, 16, 16);
         TextureRegion[][] runFrames = TextureRegion.split(runSheet, 16, 16);
@@ -67,9 +71,20 @@ public class ResourceManager {
         idleAnim.setPlayMode(Animation.PlayMode.LOOP);
         runAnim.setPlayMode(Animation.PlayMode.LOOP);
 
-        com.badlogic.gdx.graphics.Texture itemSheet = get("images/item.png");
-        com.badlogic.gdx.graphics.g2d.TextureRegion[][] itemFrames = com.badlogic.gdx.graphics.g2d.TextureRegion.split(itemSheet, 16, 16);
+        Texture itemSheet = get("images/item.png");
+        TextureRegion[][] itemFrames = TextureRegion.split(itemSheet, 16, 16);
         itemFrame = itemFrames[0][0]; // Cogemos la primera fruta
+
+        Texture eIdleSheet = get("images/enemy_idle.png");
+        Texture eRunSheet = get("images/enemy_run.png");
+        TextureRegion[][] eIdleFrames = TextureRegion.split(eIdleSheet, 16, 16);
+        TextureRegion[][] eRunFrames = TextureRegion.split(eRunSheet, 16, 16);
+        enemyIdleAnim = new Animation<>(0.2f, eIdleFrames[0]);
+        enemyRunAnim = new Animation<>(0.1f, eRunFrames[0]);
+
+        enemyIdleAnim.setPlayMode(Animation.PlayMode.LOOP);
+        enemyRunAnim.setPlayMode(Animation.PlayMode.LOOP);
+
 
     }
 
@@ -88,6 +103,8 @@ public class ResourceManager {
     }
     public Animation<TextureRegion> getIdleAnim() { return idleAnim; }
     public Animation<TextureRegion> getRunAnim() { return runAnim; }
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getItemFrame() { return itemFrame; }
+    public TextureRegion getItemFrame() { return itemFrame; }
+    public Animation<TextureRegion> getEnemyIdleAnim() { return enemyIdleAnim; }
+    public Animation<TextureRegion> getEnemyRunAnim() { return enemyRunAnim; }
 
 }
