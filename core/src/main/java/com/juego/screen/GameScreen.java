@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         // 1. Calculamos la lógica matemática (físicas, movimiento)
-        logicManager.update(delta, levelManager.getMapPixelWidth());
+        logicManager.update(delta, levelManager.getMapPixelWidth(), juego.getSoundManager());
 
         // 2. Dibujamos el resultado en pantalla
         renderManager.render(levelManager, background, logicManager, juego.getResourceManager());
