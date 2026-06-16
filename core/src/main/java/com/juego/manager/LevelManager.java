@@ -37,6 +37,16 @@ public class LevelManager {
         return currentMap;
     }
 
+    public float getMapPixelWidth() {
+        if (currentMap == null) return 0;
+        // Leemos cuántas casillas de ancho tiene el mapa
+        int widthInTiles = currentMap.getProperties().get("width", Integer.class);
+        // Leemos cuántos píxeles mide cada casilla (16)
+        int tileWidth = currentMap.getProperties().get("tilewidth", Integer.class);
+
+        return widthInTiles * tileWidth;
+    }
+
     public void dispose() {
         if (mapRenderer != null) {
             mapRenderer.dispose();

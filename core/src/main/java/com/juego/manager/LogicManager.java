@@ -38,7 +38,7 @@ public class LogicManager {
      * Actualiza el estado del juego.
      * @param delta Tiempo transcurrido desde el último frame
      */
-    public void update(float delta) {
+    public void update(float delta, float mapWidth) {
 
         // 1. CONTROLES (Inputs)
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -63,6 +63,17 @@ public class LogicManager {
         if (player.getPosition().y < 32) {
             player.getPosition().y = 32;
             player.getVelocity().y = 0; // Frenamos la caída
+        }
+        // Muro izquierdo
+        if (player.getPosition().x < 0) {
+            player.getPosition().x = 0;
+            player.getVelocity().x = 0;
+        }
+        // Muro derecho
+        // Restamos 16 que es el ancho del Onion Lad
+        if (player.getPosition().x > mapWidth - 16) {
+            player.getPosition().x = mapWidth - 16;
+            player.getVelocity().x = 0;
         }
         // COMPROBAR COLECCIONABLES
         for (Collectible c : collectibles) {

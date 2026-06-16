@@ -34,6 +34,31 @@ public class RenderManager {
     }
 
     public void render(LevelManager levelManager, Texture background, LogicManager logicManager, ResourceManager resourceManager) {
+        // LA CÁMARA SIGUE AL JUGADOR
+        Player p = logicManager.getPlayer();
+        // Centramos la cámara en el jugador (en el eje X e Y)
+        float halfScreenWidth = camera.viewportWidth / 2f;
+        float halfScreenHeight = camera.viewportHeight / 2f;
+        // 1. La cámara persigue al jugador en horizontal (X e Y)
+        camera.position.x = p.getPosition().x;
+        camera.position.y = p.getPosition().y;
+        // 2. La cámara se queda FIJA en vertical (Y) para que el suelo no flote
+        //camera.position.y = halfScreenHeight;
+        // Tope de la cámara izquierdo
+        if (camera.position.x < halfScreenWidth) {
+            camera.position.x = halfScreenWidth;
+        }
+        // Tope de la cámara a la derecha en función de los pixel del mapa
+        float maxCameraX = levelManager.getMapPixelWidth() - halfScreenWidth;
+        if (camera.position.x > maxCameraX) {
+            camera.position.x = maxCameraX;
+        }
+
+        // Muro de cámara por abajo (para que no baje del suelo base y no flote el mapa)
+        if (camera.position.y < halfScreenHeight) {
+            camera.position.y = halfScreenHeight;
+        }
+
         // 1. Actualizamos la cámara
         camera.update();
         // 2. Le decimos al batch que dibuje desde el punto de vista de la cámara
@@ -47,7 +72,9 @@ public class RenderManager {
         // 1. Pintamos el fondo. Usamos el tamaño de la cámara para que ocupe todo
         if (background != null) {
             batch.begin();
-            batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
+            batch.draw(background, camera.position.x - camera.viewportWidth / 2f,
+                camera.position.y - camera.viewportHeight / 2f,
+                camera.viewportWidth, camera.viewportHeight);
             batch.end();
         }
 
@@ -66,7 +93,7 @@ public class RenderManager {
 
 
         // --- PINTAR AL JUGADOR ---
-        Player p = logicManager.getPlayer();
+        //Player p = logicManager.getPlayer();
         TextureRegion currentFrame;
 
         // Decidimos si usamos la animación de correr o de estar quieto
