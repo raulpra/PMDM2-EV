@@ -8,20 +8,40 @@ public class Enemy {
     private final Vector2 velocity;
     private final Rectangle bounds;
 
+    private final EnemyType type;
+
+
     // Variables para la patrulla
     private final float startX;
-    private final float patrolDistance = 40f; // Cuánto camina antes de darse la vuelta
+    private float patrolDistance; // Cuánto camina antes de darse la vuelta
     private boolean movingRight = true;
     private boolean facingRight = true;
 
     private float stateTimer;
 
-    public Enemy(float startX, float startY) {
+    public Enemy(float startX, float startY, EnemyType type) {
         this.position = new Vector2(startX, startY);
         this.startX = startX;
-        this.velocity = new Vector2(30f, 0); // Camina más despacio que el jugador
+        this.type = type;
         this.bounds = new Rectangle(startX, startY, 16, 16);
         this.stateTimer = 0;
+
+        // --- AQUÍ ESTÁ LA MAGIA DE LOS 3 TIPOS ---
+        switch(type) {
+            case FAST:
+                this.velocity = new Vector2(60f, 0); // Corre el doble
+                this.patrolDistance = 60f;
+                break;
+            case TANK:
+                this.velocity = new Vector2(15f, 0); // Va súper lento
+                this.patrolDistance = 100f; // Pero llega muy lejos
+                break;
+            case NORMAL:
+            default:
+                this.velocity = new Vector2(30f, 0); // Velocidad estándar
+                this.patrolDistance = 40f;
+                break;
+        }
     }
 
     public void update(float delta) {
@@ -49,4 +69,5 @@ public class Enemy {
     public Rectangle getBounds() { return bounds; }
     public float getStateTimer() { return stateTimer; }
     public boolean isFacingRight() { return facingRight; }
+    public EnemyType getType() { return type; }
 }

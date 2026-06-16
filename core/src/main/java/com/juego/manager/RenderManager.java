@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.juego.domain.Collectible;
+import com.juego.domain.Enemy;
 import com.juego.util.Constants;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -85,7 +87,7 @@ public class RenderManager {
 
         // --- PINTAMOS LOS COLECCIONABLES ---
         batch.begin();
-        for (com.juego.domain.Collectible c : logicManager.getCollectibles()) {
+        for (Collectible c : logicManager.getCollectibles()) {
             if (!c.isCollected()) {
                 batch.draw(resourceManager.getItemFrame(), c.getBounds().x, c.getBounds().y, 16, 16);
             }
@@ -113,18 +115,16 @@ public class RenderManager {
         batch.draw(currentFrame, p.getPosition().x, p.getPosition().y, 16, 16);
 
         // --- PINTAMOS LOS ENEMIGOS ---
-        for (com.juego.domain.Enemy e : logicManager.getEnemies()) {
-            // Como siempre están patrullando, usamos la animación de correr
-            TextureRegion eFrame = resourceManager.getEnemyRunAnim().getKeyFrame(e.getStateTimer());
+        for (Enemy e : logicManager.getEnemies()) {
+            // Le pedimos al ResourceManager la animación según su TIPO
+            TextureRegion eFrame = resourceManager.getEnemyAnim(e.getType()).getKeyFrame(e.getStateTimer());
 
-            // Los volteamos si miran a la izquierda
             if (!e.isFacingRight() && !eFrame.isFlipX()) {
                 eFrame.flip(true, false);
             } else if (e.isFacingRight() && eFrame.isFlipX()) {
                 eFrame.flip(true, false);
             }
-
-            batch.draw(eFrame, e.getPosition().x, e.getPosition().y, 16, 16);
+            batch.draw(eFrame, e.getPosition().x, e.getPosition().y, eFrame.getRegionWidth(), eFrame.getRegionHeight());
         }
 
         batch.end();
