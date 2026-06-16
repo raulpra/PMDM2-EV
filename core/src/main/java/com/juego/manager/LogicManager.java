@@ -3,6 +3,7 @@ package com.juego.manager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.juego.domain.Enemy;
+import com.juego.domain.EnemyType;
 import com.juego.domain.Player;
 import com.badlogic.gdx.utils.Array;
 import com.juego.domain.Collectible;
@@ -36,9 +37,9 @@ public class LogicManager {
         collectibles.add(new Collectible(200, 40));
 
         enemies = new Array<>();
-        // Plantamos dos enemigos en el suelo (Y=32)
-        enemies.add(new Enemy(150, 32));
-        enemies.add(new Enemy(250, 32));
+        enemies.add(new Enemy(200, 32, EnemyType.NORMAL));
+        enemies.add(new Enemy(450, 32, EnemyType.FAST));
+        enemies.add(new Enemy(700, 32, EnemyType.TANK));
 
     }
 

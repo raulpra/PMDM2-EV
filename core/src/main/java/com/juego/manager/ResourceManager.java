@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.juego.domain.EnemyType;
 
 /**
  * Se encarga de cargar y gestionar todos los recursos (imágenes, sonidos, mapas)
@@ -16,8 +17,9 @@ public class ResourceManager {
     private Animation<TextureRegion> idleAnim;
     private Animation<TextureRegion> runAnim;
 
-    private Animation<TextureRegion> enemyIdleAnim;
-    private Animation<TextureRegion> enemyRunAnim;
+    private Animation<TextureRegion> animEnemyA;
+    private Animation<TextureRegion> animEnemyB;
+    private Animation<TextureRegion> animEnemyC;
 
     private TextureRegion itemFrame;
 
@@ -37,8 +39,9 @@ public class ResourceManager {
         assetManager.load("images/onion_idle.png", Texture.class);
         assetManager.load("images/onion_run.png", Texture.class);
         assetManager.load("images/item.png", Texture.class);
-        assetManager.load("images/enemy_idle.png", Texture.class);
-        assetManager.load("images/enemy_run.png", Texture.class);
+        assetManager.load("images/enemy_a.png", Texture.class);
+        assetManager.load("images/enemy_b.png", Texture.class);
+        assetManager.load("images/enemy_c.png", Texture.class);
     }
 
     /**
@@ -75,15 +78,13 @@ public class ResourceManager {
         TextureRegion[][] itemFrames = TextureRegion.split(itemSheet, 16, 16);
         itemFrame = itemFrames[0][0]; // Cogemos la primera fruta
 
-        Texture eIdleSheet = get("images/enemy_idle.png");
-        Texture eRunSheet = get("images/enemy_run.png");
-        TextureRegion[][] eIdleFrames = TextureRegion.split(eIdleSheet, 16, 16);
-        TextureRegion[][] eRunFrames = TextureRegion.split(eRunSheet, 16, 16);
-        enemyIdleAnim = new Animation<>(0.2f, eIdleFrames[0]);
-        enemyRunAnim = new Animation<>(0.1f, eRunFrames[0]);
 
-        enemyIdleAnim.setPlayMode(Animation.PlayMode.LOOP);
-        enemyRunAnim.setPlayMode(Animation.PlayMode.LOOP);
+        animEnemyA = new Animation<>(0.1f, TextureRegion.split(get("images/enemy_a.png"), 16, 16)[0]);
+        animEnemyB = new Animation<>(0.1f, TextureRegion.split(get("images/enemy_b.png"), 16, 32)[0]);
+        animEnemyC = new Animation<>(0.1f, TextureRegion.split(get("images/enemy_c.png"), 16, 32)[0]);
+        animEnemyA.setPlayMode(Animation.PlayMode.LOOP);
+        animEnemyB.setPlayMode(Animation.PlayMode.LOOP);
+        animEnemyC.setPlayMode(Animation.PlayMode.LOOP);
 
 
     }
@@ -104,7 +105,9 @@ public class ResourceManager {
     public Animation<TextureRegion> getIdleAnim() { return idleAnim; }
     public Animation<TextureRegion> getRunAnim() { return runAnim; }
     public TextureRegion getItemFrame() { return itemFrame; }
-    public Animation<TextureRegion> getEnemyIdleAnim() { return enemyIdleAnim; }
-    public Animation<TextureRegion> getEnemyRunAnim() { return enemyRunAnim; }
-
+    public Animation<TextureRegion> getEnemyAnim(EnemyType type) {
+        if (type == EnemyType.FAST) return animEnemyB;
+        if (type == EnemyType.TANK) return animEnemyC;
+        return animEnemyA; // NORMAL por defecto
+    }
 }
