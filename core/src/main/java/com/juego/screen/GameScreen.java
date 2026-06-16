@@ -47,6 +47,27 @@ public class GameScreen implements Screen {
         renderManager.render(levelManager, background, logicManager, juego.getResourceManager());
 
         hud.render(logicManager);
+
+        //  COMPROBAR FIN DE PARTIDA
+
+        // 1. GAME OVER
+        if (logicManager.getVidas() <= 0) {
+            juego.setScreen(new GameOverScreen(juego));
+            dispose(); // Destruimos este nivel para liberar memoria
+            return;    // Salimos del método para que no intente dibujar nada más
+        }
+
+        // 2. VICTORIA
+        // Si la posición X del jugador roza el ancho total del mapa (menos 32 píxeles de margen)
+        if (logicManager.getPlayer().getPosition().x >= levelManager.getMapPixelWidth() - 32) {
+            juego.setScreen(new VictoryScreen(juego, logicManager.getPuntuacion()));
+            dispose();
+            return;
+        }
+        // 2. Dibujamos el resultado en pantalla
+        renderManager.render(levelManager, background, logicManager, juego.getResourceManager());
+
+        hud.render(logicManager);
     }
 
     @Override
