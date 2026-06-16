@@ -24,12 +24,11 @@ public class Juego extends Game {
         resourceManager.finishLoading(); // Cargamos todo antes de empezar
         resourceManager.createAnimations();
 
-        // Iniciamos en el menú principal
-        setScreen(new MainMenuScreen(this));
-
         soundManager = new com.juego.manager.SoundManager();
         soundManager.playMusic();
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        // Iniciamos en el menú principal
+        setScreen(new MainMenuScreen(this));
     }
     public ResourceManager getResourceManager() {
         return resourceManager;

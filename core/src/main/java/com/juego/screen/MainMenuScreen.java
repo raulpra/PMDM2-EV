@@ -1,64 +1,86 @@
 package com.juego.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.juego.Juego;
 
 public class MainMenuScreen implements Screen {
     private final Juego juego;
-    private SpriteBatch batch;
-    private BitmapFont font;
+    private final Stage stage;
 
-    public MainMenuScreen(Juego juego) {
+    public MainMenuScreen(final Juego juego) {
         this.juego = juego;
-        this.batch = new SpriteBatch();
-        this.font = new BitmapFont(); // Fuente por defecto de libGDX
-        this.font.getData().setScale(2f); // Aumentamos el tamaño de la letra
-    }
+        this.stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
 
-    @Override
-    public void show() {}
+        Table tabla = new Table(juego.getSkin());
+        tabla.setFillParent(true);
+        tabla.center();
+
+        Label titulo = new Label("ONION LAND ADVENTURES", juego.getSkin());
+        titulo.setFontScale(2f);
+        titulo.setColor(Color.GREEN);
+        tabla.add(titulo).center().padBottom(50f).row();
+
+        // Botón Jugar
+        TextButton btnJugar = new TextButton("NUEVA PARTIDA", juego.getSkin());
+        btnJugar.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                dispose();
+                juego.setScreen(new GameScreen(juego));
+            }
+        });
+        tabla.add(btnJugar).center().width(250).padBottom(15f).row();
+
+        // Botón Ranking
+        TextButton btnRanking = new TextButton("TOP 10 PUNTUACIONES", juego.getSkin());
+        btnRanking.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                dispose();
+                juego.setScreen(new HighScoresScreen(juego));
+            }
+        });
+        tabla.add(btnRanking).center().width(250).padBottom(15f).row();
+
+        // Botón Opciones (Lo conectaremos más adelante)
+        TextButton btnOpciones = new TextButton("OPCIONES", juego.getSkin());
+        tabla.add(btnOpciones).center().width(250).padBottom(15f).row();
+
+        // Botón Salir
+        TextButton btnSalir = new TextButton("SALIR DEL JUEGO", juego.getSkin());
+        btnSalir.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+        tabla.add(btnSalir).center().width(250).padBottom(15f).row();
+
+        stage.addActor(tabla);
+    }
 
     @Override
     public void render(float delta) {
-        // Limpiamos la pantalla con un color gris oscuro
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Dibujamos el texto
-        batch.begin();
-        font.draw(batch, "MI JUEGO DE PLATAFORMAS", 200, 300);
-        font.draw(batch, "Pulsa ENTER para Jugar", 230, 200);
-        font.draw(batch, "Pulsa C para Configuracion", 230, 150);
-        batch.end();
-
-        // Lógica de transición de pantallas
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            juego.setScreen(new GameScreen(juego));
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            juego.setScreen(new ConfigurationScreen(juego));
-        }
+        stage.act(delta);
+        stage.draw();
     }
 
-    @Override
-    public void resize(int width, int height) {}
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        font.dispose();
-    }
+    @Override public void show() {}
+    @Override public void resize(int w, int h) { stage.getViewport().update(w, h, true); }
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() { stage.dispose(); }
 }
