@@ -2,6 +2,7 @@ package com.juego.manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.juego.domain.Enemy;
 import com.juego.domain.Player;
 import com.badlogic.gdx.utils.Array;
 import com.juego.domain.Collectible;
@@ -15,6 +16,7 @@ public class LogicManager {
     private int vidas = 3;
     private int puntuacion = 0;
     private final Array<Collectible> collectibles;
+    private final Array<Enemy> enemies;
 
 
 
@@ -32,6 +34,12 @@ public class LogicManager {
         collectibles.add(new Collectible(100, 40));
         collectibles.add(new Collectible(150, 60));
         collectibles.add(new Collectible(200, 40));
+
+        enemies = new Array<>();
+        // Plantamos dos enemigos en el suelo (Y=32)
+        enemies.add(new Enemy(150, 32));
+        enemies.add(new Enemy(250, 32));
+
     }
 
     /**
@@ -83,6 +91,10 @@ public class LogicManager {
                 puntuacion += 10;
             }
         }
+
+        for (Enemy e : enemies) {
+            e.update(delta);
+        }
     }
     public Player getPlayer() {
         return player;
@@ -91,4 +103,5 @@ public class LogicManager {
     public int getVidas() { return vidas; }
     public int getPuntuacion() { return puntuacion; }
     public Array<Collectible> getCollectibles() { return collectibles; }
+    public Array<Enemy> getEnemies() { return enemies; }
 }
