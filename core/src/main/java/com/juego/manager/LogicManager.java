@@ -95,6 +95,22 @@ public class LogicManager {
         for (Enemy e : enemies) {
             e.update(delta);
         }
+        // COLISIONES CON ENEMIGOS
+        for (Enemy e : enemies) {
+            if (player.getBounds().overlaps(e.getBounds())) {
+                // 1. Restamos una vida
+                vidas--;
+
+                // 2. Mandamos al jugador instantáneamente de vuelta a la salida
+                player.getPosition().set(50, 150);
+
+                // 3. Le frenamos la velocidad por si estaba saltando o cayendo
+                player.getVelocity().set(0, 0);
+
+                // Salimos del bucle para no chocar con más cosas a la vez
+                break;
+            }
+        }
     }
     public Player getPlayer() {
         return player;
