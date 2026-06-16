@@ -27,7 +27,7 @@ public class GameScreen implements Screen {
 
         // Instanciamos el gestor de nivel y cargamos el nivel 1
         this.levelManager = new LevelManager(juego);
-        this.levelManager.loadLevel("maps/nivel1.tmx");
+        this.levelManager.loadLevel("maps/nivel1.tmx", this.logicManager);
         // Cargamos el fondo. LibGDX lo carga al vuelo
         background = new Texture("images/fondo1.png");
 
@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         // 1. Calculamos la lógica matemática (físicas, movimiento)
-        logicManager.update(delta, levelManager.getMapPixelWidth(), juego.getSoundManager());
+        logicManager.update(delta, levelManager, juego.getSoundManager());
 
         // 2. Dibujamos el resultado en pantalla
         renderManager.render(levelManager, background, logicManager, juego.getResourceManager());

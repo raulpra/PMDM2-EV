@@ -29,8 +29,6 @@ public class Player {
         if (invulnerableTimer > 0) {
             invulnerableTimer -= delta;
         }
-        // Le sumamos a la posición la velocidad multiplicada por el tiempo (delta)
-        position.add(velocity.x * delta, velocity.y * delta);
 
         // Actualizamos la caja invisible para que siga al dibujo del jugador
         bounds.setPosition(position.x, position.y);

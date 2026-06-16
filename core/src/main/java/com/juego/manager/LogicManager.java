@@ -24,30 +24,21 @@ public class LogicManager {
     // Constantes de físicas
     private static final float GRAVITY = -400f;       // Fuerza de la gravedad (hacia abajo)
     private static final float MOVEMENT_SPEED = 100f; // Velocidad al caminar
-    private static final float JUMP_SPEED = 200f;     // Fuerza del salto
+    private static final float JUMP_SPEED = 240f;     // Aumentado para saltar un bloque extra
 
 
     public LogicManager() {
         // Hacemos que nazca en la coordenada X=50, Y=150 (en el aire)
         player = new Player(50, 150);
         collectibles = new Array<>();
-        // 3 frutas de prueba
-        collectibles.add(new Collectible(100, 40));
-        collectibles.add(new Collectible(150, 60));
-        collectibles.add(new Collectible(200, 40));
-
         enemies = new Array<>();
-        enemies.add(new Enemy(200, 32, EnemyType.NORMAL));
-        enemies.add(new Enemy(450, 32, EnemyType.FAST));
-        enemies.add(new Enemy(700, 32, EnemyType.TANK));
-
     }
 
     /**
      * Actualiza el estado del juego.
      * @param delta Tiempo transcurrido desde el último frame
      */
-    public void update(float delta, float mapWidth, SoundManager soundManager) {
+    public void update(float delta, LevelManager levelManager, SoundManager soundManager) {
 
         // 1. CONTROLES (Inputs)
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -55,35 +46,63 @@ public class LogicManager {
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.getVelocity().x = -MOVEMENT_SPEED;
         } else {
-            // Si no tocamos nada, se frena instantáneamente
             player.getVelocity().x = 0;
         }
-        // SALTO: Solo puede saltar si está tocando el suelo (de momento asumimos que el suelo es y<=32)
-        if ((Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-            && player.getPosition().y <= 32) {
+
+        // 2. GRAVEDAD
+        player.getVelocity().y += GRAVITY * delta;
+
+        // 3. MOVER X Y COMPROBAR COLISION
+        player.getPosition().x += player.getVelocity().x * delta;
+        if (levelManager.isSolid(player.getPosition().x, player.getPosition().y + 1) ||
+            levelManager.isSolid(player.getPosition().x + 15, player.getPosition().y + 1) ||
+            levelManager.isSolid(player.getPosition().x, player.getPosition().y + 14) ||
+            levelManager.isSolid(player.getPosition().x + 15, player.getPosition().y + 14)) {
+            // Deshacemos el movimiento en X
+            player.getPosition().x -= player.getVelocity().x * delta;
+            player.getVelocity().x = 0;
+        }
+
+        // 4. MOVER Y Y COMPROBAR COLISION
+        player.getPosition().y += player.getVelocity().y * delta;
+        if (player.getVelocity().y < 0) { // cayendo
+            // Comprobamos un poco por dentro (x+1 y x+14) para no chocar con paredes laterales
+            if (levelManager.isSolid(player.getPosition().x + 1, player.getPosition().y) ||
+                levelManager.isSolid(player.getPosition().x + 14, player.getPosition().y)) {
+                // Toca el suelo
+                player.getPosition().y = (float) (Math.ceil(player.getPosition().y / 16) * 16);
+                player.getVelocity().y = 0;
+            }
+        } else if (player.getVelocity().y > 0) { // saltando
+            if (levelManager.isSolid(player.getPosition().x + 1, player.getPosition().y + 15) ||
+                levelManager.isSolid(player.getPosition().x + 14, player.getPosition().y + 15)) {
+                // Toca el techo
+                player.getPosition().y = (float) (Math.floor(player.getPosition().y / 16) * 16);
+                player.getVelocity().y = 0;
+            }
+        }
+
+        // SALTO
+        // Miramos si justo debajo de los pies hay suelo
+        boolean grounded = levelManager.isSolid(player.getPosition().x, player.getPosition().y - 1) || 
+                           levelManager.isSolid(player.getPosition().x + 15, player.getPosition().y - 1);
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) && grounded) {
             player.getVelocity().y = JUMP_SPEED;
             soundManager.playJump();
         }
-        // 2. GRAVEDAD
-        // La gravedad tira de él hacia abajo constantemente
-        player.getVelocity().y += GRAVITY * delta;
-        // 3. MOVER AL JUGADOR ---
-        player.update(delta);
-        // 4. COLISIONES (Suelo base temporal)
-        if (player.getPosition().y < 32) {
-            player.getPosition().y = 32;
-            player.getVelocity().y = 0; // Frenamos la caída
-        }
-        // Muro izquierdo
-        if (player.getPosition().x < 0) {
-            player.getPosition().x = 0;
-            player.getVelocity().x = 0;
-        }
-        // Muro derecho
-        // Restamos 16 que es el ancho del Onion Lad
-        if (player.getPosition().x > mapWidth - 16) {
-            player.getPosition().x = mapWidth - 16;
-            player.getVelocity().x = 0;
+
+        player.update(delta); // Actualiza estado/animacion
+        
+        // LIMITES DEL MAPA (Muros transparentes y agujeros)
+        if (player.getPosition().x < 0) player.getPosition().x = 0;
+        if (player.getPosition().x > levelManager.getMapPixelWidth() - 16) player.getPosition().x = levelManager.getMapPixelWidth() - 16;
+        
+        // Si cae por un agujero (fuera del mapa)
+        if (player.getPosition().y < -32) {
+            vidas--;
+            soundManager.playHit();
+            player.getPosition().set(50, 150); // Reaparecer
+            player.getVelocity().set(0,0);
         }
         // COMPROBAR COLECCIONABLES
         for (Collectible c : collectibles) {
