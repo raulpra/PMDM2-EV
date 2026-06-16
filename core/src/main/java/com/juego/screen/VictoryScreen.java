@@ -8,7 +8,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.juego.Juego;
+import com.juego.manager.ScoreManager;
 import com.juego.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VictoryScreen implements Screen {
     private final Juego juego;
@@ -16,8 +20,10 @@ public class VictoryScreen implements Screen {
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final OrthographicCamera camera;
+    private final ScoreManager scoreManager;
+    private final List<Integer> topScores;
 
-    // Fíjate que le pasamos la puntuación para mostrarla
+    // Pasamos la puntuación para mostrarla
     public VictoryScreen(Juego juego, int puntuacion) {
         this.juego = juego;
         this.puntuacion = puntuacion;
@@ -25,6 +31,9 @@ public class VictoryScreen implements Screen {
         this.font = new BitmapFont();
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Constants.APP_WIDTH, Constants.APP_HEIGHT);
+        this.scoreManager = new ScoreManager();
+        this.scoreManager.addScore(puntuacion);
+        this.topScores = scoreManager.getTopScores();
     }
 
     @Override
@@ -40,9 +49,17 @@ public class VictoryScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        font.draw(batch, "¡NIVEL COMPLETADO!", Constants.APP_WIDTH / 2f - 60, Constants.APP_HEIGHT / 2f + 40);
-        font.draw(batch, "Puntuación Final: " + puntuacion, Constants.APP_WIDTH / 2f - 60, Constants.APP_HEIGHT / 2f);
-        font.draw(batch, "Pulsa ENTER para volver al menú", Constants.APP_WIDTH / 2f - 100, Constants.APP_HEIGHT / 2f - 40);
+        font.draw(batch, "¡NIVEL COMPLETADO!", Constants.APP_WIDTH / 2f - 60, Constants.APP_HEIGHT / 2f + 80);
+        font.draw(batch, "Puntuación Final: " + puntuacion, Constants.APP_WIDTH / 2f - 60, Constants.APP_HEIGHT / 2f + 50);
+
+        // Dibujamos el Top 5
+        font.draw(batch, "--- TOP MEJORES ---", Constants.APP_WIDTH / 2f - 60, Constants.APP_HEIGHT / 2f + 20);
+        int yOffset = 0;
+        for (int i = 0; i < topScores.size(); i++) {
+            font.draw(batch, (i + 1) + ". " + topScores.get(i) + " pts", Constants.APP_WIDTH / 2f - 40, Constants.APP_HEIGHT / 2f + yOffset);
+            yOffset -= 20; // Bajamos 20 píxeles para el siguiente de la lista
+        }
+        font.draw(batch, "Pulsa ENTER para menú", Constants.APP_WIDTH / 2f - 70, Constants.APP_HEIGHT / 2f - 110);
         batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
