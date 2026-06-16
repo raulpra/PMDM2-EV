@@ -46,7 +46,7 @@ public class LogicManager {
      * Actualiza el estado del juego.
      * @param delta Tiempo transcurrido desde el último frame
      */
-    public void update(float delta, float mapWidth) {
+    public void update(float delta, float mapWidth, SoundManager soundManager) {
 
         // 1. CONTROLES (Inputs)
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -61,6 +61,7 @@ public class LogicManager {
         if ((Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
             && player.getPosition().y <= 32) {
             player.getVelocity().y = JUMP_SPEED;
+            soundManager.playJump();
         }
         // 2. GRAVEDAD
         // La gravedad tira de él hacia abajo constantemente
@@ -89,6 +90,7 @@ public class LogicManager {
             if (!c.isCollected() && player.getBounds().overlaps(c.getBounds())) {
                 c.setCollected(true);
                 puntuacion += 10;
+                soundManager.playCoin();
             }
         }
 
@@ -100,7 +102,7 @@ public class LogicManager {
             if (player.getBounds().overlaps(e.getBounds())) {
                 // 1. Restamos una vida
                 vidas--;
-
+                soundManager.playHit();
                 // 2. Mandamos al jugador instantáneamente de vuelta a la salida
                 player.getPosition().set(50, 150);
 

@@ -15,7 +15,7 @@ public class SoundManager {
         // Cargar música
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         backgroundMusic.setLooping(true); // Que se repita infinitamente
-        backgroundMusic.setVolume(0.3f);  // Volumen bajito
+        backgroundMusic.setVolume(0.6f);  // Volumen
 
         // Cargar efectos
         jumpSound = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.mp3"));
@@ -35,9 +35,9 @@ public class SoundManager {
         }
     }
 
-    public void playJump() { if (jumpSound != null) jumpSound.play(0.5f); }
-    public void playCoin() { if (coinSound != null) coinSound.play(0.6f); }
-    public void playHit()  { if (hitSound != null)  hitSound.play(0.7f); }
+    public void playJump() { if (jumpSound != null) jumpSound.play(0.6f); }
+    public void playCoin() { if (coinSound != null) coinSound.play(0.76f); }
+    public void playHit()  { if (hitSound != null)  hitSound.play(0.87f); }
 
     public void dispose() {
         if (backgroundMusic != null) backgroundMusic.dispose();
