@@ -1,6 +1,8 @@
 package com.juego;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.juego.manager.ResourceManager;
 import com.juego.manager.SoundManager;
 import com.juego.screen.MainMenuScreen;
@@ -13,6 +15,7 @@ public class Juego extends Game {
 
     private ResourceManager resourceManager;
     private SoundManager soundManager;
+    private Skin skin;
 
     @Override
     public void create() {
@@ -26,6 +29,7 @@ public class Juego extends Game {
 
         soundManager = new com.juego.manager.SoundManager();
         soundManager.playMusic();
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
     }
     public ResourceManager getResourceManager() {
         return resourceManager;
@@ -36,8 +40,10 @@ public class Juego extends Game {
         if (resourceManager != null) {
             resourceManager.dispose();
             soundManager.dispose();
+            skin.dispose();
         }
     }
 
     public SoundManager getSoundManager() { return soundManager; }
+    public Skin getSkin() { return skin; }
 }
