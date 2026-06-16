@@ -12,10 +12,6 @@ public class GameScreen implements Screen {
     private final RenderManager renderManager;
     private final LogicManager logicManager;
     private final LevelManager levelManager;
-
-    // Variable para el fondo
-    private Texture background;
-
     private final HudRenderer hud;
 
 
@@ -28,8 +24,6 @@ public class GameScreen implements Screen {
         // Instanciamos el gestor de nivel y cargamos el nivel 1
         this.levelManager = new LevelManager(juego);
         this.levelManager.loadLevel("maps/nivel1.tmx", this.logicManager);
-        // Cargamos el fondo. LibGDX lo carga al vuelo
-        background = new Texture("images/fondo1.png");
 
         hud = new HudRenderer();
 
@@ -44,7 +38,7 @@ public class GameScreen implements Screen {
         logicManager.update(delta, levelManager, juego.getSoundManager());
 
         // 2. Dibujamos el resultado en pantalla
-        renderManager.render(levelManager, background, logicManager, juego.getResourceManager());
+        renderManager.render(levelManager, levelManager.getBackground(), logicManager, juego.getResourceManager());
 
         hud.render(logicManager);
 
@@ -57,15 +51,24 @@ public class GameScreen implements Screen {
             return;    // Salimos del método para que no intente dibujar nada más
         }
 
-        // 2. VICTORIA
-        // Si la posición X del jugador roza el ancho total del mapa (menos 32 píxeles de margen)
+        // 2. VICTORIA O SIGUIENTE NIVEL
         if (logicManager.getPlayer().getPosition().x >= levelManager.getMapPixelWidth() - 32) {
-            juego.setScreen(new VictoryScreen(juego, logicManager.getPuntuacion()));
-            dispose();
+            if (levelManager.getCurrentLevel() == 1) {
+                // Pasamos al nivel 2
+                levelManager.setCurrentLevel(2);
+                levelManager.loadLevel("maps/nivel2.tmx", logicManager);
+                // Ponemos al jugador al principio
+                logicManager.getPlayer().getPosition().set(50, 150);
+                logicManager.getPlayer().getVelocity().set(0, 0);
+            } else {
+                // Ya ha completado el nivel 2, ha ganado el juego
+                juego.setScreen(new VictoryScreen(juego, logicManager.getPuntuacion()));
+                dispose();
+            }
             return;
         }
         // 2. Dibujamos el resultado en pantalla
-        renderManager.render(levelManager, background, logicManager, juego.getResourceManager());
+        renderManager.render(levelManager, levelManager.getBackground(), logicManager, juego.getResourceManager());
 
         hud.render(logicManager);
     }
@@ -86,7 +89,6 @@ public class GameScreen implements Screen {
     public void dispose() {
         renderManager.dispose();
         levelManager.dispose();
-        background.dispose();
         hud.dispose();
     }
 }
