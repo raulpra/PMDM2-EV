@@ -24,7 +24,7 @@ public class HudRenderer implements Disposable {
         hudCamera.setToOrtho(false, Constants.APP_WIDTH, Constants.APP_HEIGHT);
     }
 
-    public void render(LogicManager logic) {
+    public void render(LogicManager logic, com.juego.manager.LevelManager levelManager) {
         hudCamera.update();
         hudBatch.setProjectionMatrix(hudCamera.combined);
 
@@ -32,6 +32,7 @@ public class HudRenderer implements Disposable {
         hudBatch.begin();
         font.draw(hudBatch, "Vidas: " + logic.getVidas(), 20, Constants.APP_HEIGHT - 20);
         font.draw(hudBatch, "Puntos: " + logic.getPuntuacion(), 20, Constants.APP_HEIGHT - 40);
+        font.draw(hudBatch, "Nivel: " + levelManager.getCurrentLevel(), 20, Constants.APP_HEIGHT - 60);
         hudBatch.end();
     }
 

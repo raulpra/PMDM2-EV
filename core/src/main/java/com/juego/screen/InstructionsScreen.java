@@ -6,18 +6,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.juego.Juego;
 
-public class ConfigurationScreen implements Screen {
+public class InstructionsScreen implements Screen {
     private final Juego juego;
     private final Stage stage;
 
-    public ConfigurationScreen(final Juego juego) {
+    public InstructionsScreen(final Juego juego) {
         this.juego = juego;
         this.stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -26,32 +25,24 @@ public class ConfigurationScreen implements Screen {
         tabla.setFillParent(true);
         tabla.center();
 
-        Label titulo = new Label("CONFIGURACION", juego.getSkin());
+        Label titulo = new Label("INSTRUCCIONES", juego.getSkin());
         titulo.setFontScale(2f);
         titulo.setColor(Color.ORANGE);
-        tabla.add(titulo).center().padBottom(50f).row();
+        tabla.add(titulo).center().padBottom(30f).row();
 
-        // Opción 1: Música
-        final CheckBox cbMusic = new CheckBox(" Activar Musica", juego.getSkin());
-        cbMusic.setChecked(juego.getSoundManager().isMusicEnabled());
-        cbMusic.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                juego.getSoundManager().setMusicEnabled(cbMusic.isChecked());
-            }
-        });
-        tabla.add(cbMusic).left().padBottom(20f).row();
-
-        // Opción 2: Efectos de Sonido
-        final CheckBox cbSound = new CheckBox(" Activar Efectos de Sonido", juego.getSkin());
-        cbSound.setChecked(juego.getSoundManager().isSoundEnabled());
-        cbSound.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                juego.getSoundManager().setSoundEnabled(cbSound.isChecked());
-            }
-        });
-        tabla.add(cbSound).left().padBottom(50f).row();
+        Label l1 = new Label("- Usa A y D para moverte a izquierda y derecha.", juego.getSkin());
+        Label l2 = new Label("- Pulsa W para saltar.", juego.getSkin());
+        Label l3 = new Label("- Coge frutas para conseguir puntos extras.", juego.getSkin());
+        Label l4 = new Label("- Evita a los enemigos o perderas vidas.", juego.getSkin());
+        Label l5 = new Label("- Llega hasta el final del mapa para avanzar de nivel.", juego.getSkin());
+        Label l6 = new Label("- Pulsa ESCAPE durante el juego para pausar.", juego.getSkin());
+        
+        tabla.add(l1).left().padBottom(10f).row();
+        tabla.add(l2).left().padBottom(10f).row();
+        tabla.add(l3).left().padBottom(10f).row();
+        tabla.add(l4).left().padBottom(10f).row();
+        tabla.add(l5).left().padBottom(10f).row();
+        tabla.add(l6).left().padBottom(40f).row();
 
         // Botón Volver
         TextButton btnVolver = new TextButton("VOLVER AL MENU", juego.getSkin());

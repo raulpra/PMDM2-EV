@@ -52,8 +52,26 @@ public class MainMenuScreen implements Screen {
         });
         tabla.add(btnRanking).center().width(250).padBottom(15f).row();
 
-        // Botón Opciones (Lo conectaremos más adelante)
+        // Botón Instrucciones
+        TextButton btnInstrucciones = new TextButton("INSTRUCCIONES", juego.getSkin());
+        btnInstrucciones.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                dispose();
+                juego.setScreen(new InstructionsScreen(juego));
+            }
+        });
+        tabla.add(btnInstrucciones).center().width(250).padBottom(15f).row();
+
+        // Botón Opciones
         TextButton btnOpciones = new TextButton("OPCIONES", juego.getSkin());
+        btnOpciones.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                dispose();
+                juego.setScreen(new ConfigurationScreen(juego));
+            }
+        });
         tabla.add(btnOpciones).center().width(250).padBottom(15f).row();
 
         // Botón Salir
