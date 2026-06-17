@@ -1,33 +1,51 @@
-# MiJuego
+# Onion Lad Adventures 🧅
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Es un videojuego de plataformas en 2D desarrollado en Java utilizando la librería **LibGDX**. 
+Este proyecto ha sido desarrollado siguiendo el paradigma de **Programación Orientada a Objetos (POO)** y cumple con los siguientes requisitos.
 
-This project was generated with a template including simple application launchers and a main class extending `Game` that sets the first screen.
+## Características Principales 
+- **Personaje Principal y Niveles**: Controlas a "Onion Lad", cuyo objetivo es atravesar múltiples niveles de izquierda a derecha.
+- **HUD Integrado**: Interfaz en pantalla que muestra la puntuación, las vidas restantes y el nivel actual en tiempo real.
+- **Ciclo de Menús Completo**:
+  - Menú Principal para empezar partida o ver las puntuaciones.
+  - Pantalla de Instrucciones con los controles.
+  - Pantalla de Configuración para mutear música y sonidos (las preferencias se guardan de forma permanente).
+  - Pantallas dinámicas de *Game Over* y *Victoria* que te devuelven al menú sin necesidad de reiniciar la aplicación.
+- **Interacción con NPCs**: Existen 3 tipos de enemigos con características de velocidad y patrulla distintas (`NORMAL`, `FAST`, y `TANK`).
+- **Recursos Audiovisuales**: El juego cuenta con animaciones para los personajes y sistema de gestión de audio para música y efectos de sonido.
 
-## Platforms
+## Funcionalidades Extra 
+1. **Top 10 Puntuaciones**: Sistema de ranking que guarda permanentemente el nombre y la puntuación de las mejores partidas usando `Preferences`.
+2. **Generador de Niveles Automático**: Sistema dinámico que lee archivos `.tmx` (generados con TiledMap Editor). Permite crear niveles infinitos y poblar el mapa de monedas, enemigos y zonas de muerte sin tocar una sola línea de código Java.
+3. **Soporte Ilimitado de Niveles**: El gestor de recursos y la lógica están programados para detectar de forma automática hasta 20 niveles. Si quieres añadir un nivel, simplemente arrastra un archivo `nivel3.tmx` a la carpeta `maps` y el juego lo cargará y transicionará automáticamente.
+4. **Menú de Pausa In-Game**: Durante la partida es posible pulsar la tecla `ESCAPE` para congelar la lógica del juego, desplegando un sub-menú para mutear el sonido en caliente, volver al menú principal o salir al escritorio.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+## Estructura y Arquitectura 
+El proyecto se divide en las siguientes capas y gestores:
+- `com.juego.domain`: Clases puras de objetos (Modelos) como `Player`, `Enemy`, y los enums de `EnemyType`.
+- `com.juego.manager`: Lógica de negocio (Controladores).
+  - `LevelManager`: Procesa el archivo TMX y extrae la geometría y objetos.
+  - `LogicManager`: Procesa las físicas matemáticas, la gravedad y las colisiones basándose en el TiledMap.
+  - `RenderManager` y `SoundManager`: Clases dedicadas de audio e imagen.
+- `com.juego.screen`: Pantallas de la interfaz gráfica implementando Scene2D.
 
-## Gradle
+## Controles del Juego
+- `A` / `D` : Moverse a izquierda y derecha.
+- `W` : Saltar (La altura del salto depende de la configuración de gravedad en el código).
+- `ESCAPE` : Pausar el juego.
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+## Compilación y Ejecución
+Para descargar y arrancar el juego desde la terminal, sigue estos pasos:
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
-
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+1. Clona el repositorio en tu ordenador:
+```bash
+git clone https://github.com/raulpra/PMDM2-EV.git
+```
+2. Sitúate en el directorio principal del proyecto descargado:
+```bash
+cd PMDM2-EV
+```
+3. Ejecuta el juego usando Gradle:
+```bash
+./gradlew lwjgl3:run
+```

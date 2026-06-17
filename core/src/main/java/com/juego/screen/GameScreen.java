@@ -125,12 +125,17 @@ public class GameScreen implements Screen {
 
             // 3. Comprobar Victoria o Siguiente Nivel
             if (logicManager.getPlayer().getPosition().x >= levelManager.getMapPixelWidth() - 32) {
-                if (levelManager.getCurrentLevel() == 1) {
-                    levelManager.setCurrentLevel(2);
-                    levelManager.loadLevel("maps/nivel2.tmx", logicManager);
+                int nextLevel = levelManager.getCurrentLevel() + 1;
+                String nextMapPath = "maps/nivel" + nextLevel + ".tmx";
+                
+                if (juego.getResourceManager().isLoaded(nextMapPath)) {
+                    // Hay un siguiente nivel disponible
+                    levelManager.setCurrentLevel(nextLevel);
+                    levelManager.loadLevel(nextMapPath, logicManager);
                     logicManager.getPlayer().getPosition().set(50, 150);
                     logicManager.getPlayer().getVelocity().set(0, 0);
                 } else {
+                    // No hay más niveles, has completado el juego
                     juego.setScreen(new VictoryScreen(juego, logicManager.getPuntuacion()));
                     dispose();
                 }
