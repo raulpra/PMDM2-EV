@@ -65,9 +65,9 @@ public class VictoryScreen implements Screen {
                 // Guardamos la puntuación
                 scoreManager.addScore(nombre, puntuacion);
 
-                // Nos vamos al menú
+                // Nos vamos a la pantalla de puntuaciones automáticamente
                 dispose();
-                juego.setScreen(new MainMenuScreen(juego));
+                juego.setScreen(new HighScoresScreen(juego));
             }
         });
 

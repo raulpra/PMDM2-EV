@@ -118,7 +118,7 @@ public class GameScreen implements Screen {
 
             // 2. Comprobar Fin de Partida
             if (logicManager.getVidas() <= 0) {
-                juego.setScreen(new GameOverScreen(juego));
+                juego.setScreen(new GameOverScreen(juego, logicManager.getPuntuacion()));
                 dispose();
                 return;
             }
