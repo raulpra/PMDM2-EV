@@ -26,7 +26,7 @@ public class MainMenuScreen implements Screen {
         tabla.center();
 
         Label titulo = new Label("ONION LAND ADVENTURES", juego.getSkin());
-        titulo.setFontScale(2f);
+        titulo.setFontScale(2.5f);
         titulo.setColor(Color.GREEN);
         tabla.add(titulo).center().padBottom(50f).row();
 

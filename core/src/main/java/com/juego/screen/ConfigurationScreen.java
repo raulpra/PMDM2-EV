@@ -28,7 +28,7 @@ public class ConfigurationScreen implements Screen {
 
         Label titulo = new Label("CONFIGURACION", juego.getSkin());
         titulo.setFontScale(2f);
-        titulo.setColor(Color.ORANGE);
+        titulo.setColor(Color.GREEN);
         tabla.add(titulo).center().padBottom(50f).row();
 
         // Opción 1: Música
@@ -69,7 +69,7 @@ public class ConfigurationScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0.2f, 0.3f, 1);
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();

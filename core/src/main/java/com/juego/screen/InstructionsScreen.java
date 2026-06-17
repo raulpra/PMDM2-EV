@@ -27,7 +27,7 @@ public class InstructionsScreen implements Screen {
 
         Label titulo = new Label("INSTRUCCIONES", juego.getSkin());
         titulo.setFontScale(2f);
-        titulo.setColor(Color.ORANGE);
+        titulo.setColor(Color.GREEN);
         tabla.add(titulo).center().padBottom(30f).row();
 
         Label l1 = new Label("- Usa A y D para moverte a izquierda y derecha.", juego.getSkin());
@@ -36,7 +36,7 @@ public class InstructionsScreen implements Screen {
         Label l4 = new Label("- Evita a los enemigos o perderas vidas.", juego.getSkin());
         Label l5 = new Label("- Llega hasta el final del mapa para avanzar de nivel.", juego.getSkin());
         Label l6 = new Label("- Pulsa ESCAPE durante el juego para pausar.", juego.getSkin());
-        
+
         tabla.add(l1).left().padBottom(10f).row();
         tabla.add(l2).left().padBottom(10f).row();
         tabla.add(l3).left().padBottom(10f).row();
@@ -60,7 +60,7 @@ public class InstructionsScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0.2f, 0.3f, 1);
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();

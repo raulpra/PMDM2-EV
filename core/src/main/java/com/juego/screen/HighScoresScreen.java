@@ -32,8 +32,8 @@ public class HighScoresScreen implements Screen {
         tabla.center();
 
         Label titulo = new Label("TOP 10 JUGADORES", juego.getSkin());
-        titulo.setFontScale(1.5f);
-        titulo.setColor(Color.GOLD);
+        titulo.setFontScale(2f);
+        titulo.setColor(Color.GREEN);
         tabla.add(titulo).center().padBottom(30f).row();
 
         List<ScoreManager.ScoreRecord> topScores = scoreManager.getTopScores();
