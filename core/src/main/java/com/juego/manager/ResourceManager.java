@@ -35,8 +35,14 @@ public class ResourceManager {
     public void loadAllResources() {
 
         // assetManager.load("images/tileset.png", Texture.class);
-        assetManager.load("maps/nivel1.tmx", TiledMap.class);
-        assetManager.load("maps/nivel2.tmx", TiledMap.class);
+        // Cargar mapas de forma dinámica (soporta hasta 20 niveles automáticamente)
+        for (int i = 1; i <= 20; i++) {
+            String mapPath = "maps/nivel" + i + ".tmx";
+            if (Gdx.files.internal(mapPath).exists()) {
+                assetManager.load(mapPath, TiledMap.class);
+            }
+        }
+
         assetManager.load("images/onion_idle.png", Texture.class);
         assetManager.load("images/onion_run.png", Texture.class);
         assetManager.load("images/item.png", Texture.class);
@@ -95,6 +101,13 @@ public class ResourceManager {
      */
     public <T> T get(String fileName) {
         return assetManager.get(fileName);
+    }
+
+    /**
+     * Comprueba si un recurso ha sido cargado.
+     */
+    public boolean isLoaded(String fileName) {
+        return assetManager.isLoaded(fileName);
     }
 
     /**
